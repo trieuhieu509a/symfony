@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Updates\SiteUpdateManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -101,6 +102,19 @@ class BlogController extends Controller
         $filters = $session->get('filters', array());
         return $this->json(['$filters', $filters]);
         $this->file();
+    }
+
+    public function service(SiteUpdateManager $siteUpdateManager){
+        if ($siteUpdateManager->notifyOfSiteUpdate()) {
+            $message = $this->addFlash('success', 'Notification mail was sent successfully.');
+        }
+        // this ONLY works if you extend the base Controller
+        $adminEmail = $this->container->getParameter('admin_email');
+        // or a shorter way!
+        // $adminEmail = $this->getParameter('admin_email');
+
+        //$this->addFlash('success', $message);
+        return $this->json(['$adminEmail', $adminEmail]);
     }
 
 }

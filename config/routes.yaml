@@ -23,3 +23,9 @@ generating-url:
 session:
     path: /session
     controller: App\Controller\BlogController::session
+service:
+    path: /service
+    controller: App\Controller\BlogController::service
+form:
+    path: /form
+    controller: App\Controller\DefaultController::form
