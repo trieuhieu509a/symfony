@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 use App\Entity\Product;
 use Symfony\Component\HttpFoundation\Response;
@@ -115,5 +116,56 @@ class ProductController extends Controller
         $products = $this->getDoctrine()
             ->getRepository(Product::class)
             ->findAllGreaterThanPrice($minPrice);
+    }
+
+    /**
+     * @Route("/router")
+     */
+    public function getContainer()
+    {
+        $request = Request::createFromGlobals();
+
+        // the URI being requested (e.g. /about) minus any query parameters
+        $request->getPathInfo();
+
+        // retrieves $_GET and $_POST variables respectively
+        $request->query->get('id');
+        $request->request->get('category', 'default category');
+
+        // retrieves $_SERVER variables
+        $request->server->get('HTTP_HOST');
+
+        // retrieves an instance of UploadedFile identified by "attachment"
+        $request->files->get('attachment');
+
+        // retrieves a $_COOKIE value
+        $request->cookies->get('PHPSESSID');
+
+        // retrieves an HTTP request header, with normalized, lowercase keys
+        $request->headers->get('host');
+        $request->headers->get('content_type');
+
+        $request->getMethod();    // e.g. GET, POST, PUT, DELETE or HEAD
+        $request->getLanguages(); // an array of languages the client accepts
+
+        return $this->json([$request->getLanguages(), $request->isSecure()]);
+    }
+
+    /**
+     * @Route("/respone")
+     */
+    public function respone()
+    {
+        $response = new Response();
+
+        $response->setContent('<html><body><h1>Hello world!</h1></body></html>');
+        $response->setStatusCode(Response::HTTP_OK);
+
+        // sets a HTTP response header
+        $response->headers->set('Content-Type', 'text/html');
+
+        // prints the HTTP headers followed by the content
+        $response->send();
+        return $response;
     }
 }
